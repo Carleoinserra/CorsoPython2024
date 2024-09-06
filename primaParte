@@ -1,0 +1,61 @@
+nome = "Carlo"
+
+anni = 39
+
+print(nome)
+print(anni)
+
+str_num = "30"
+num = int(str_num)
+
+print(num / 10)
+
+num_dec = 10.3456
+
+num1 = int(num_dec)
+
+print(num1)
+
+#sono un commento a singola linea
+print(10 + 3 +4)
+'''
+Sono un commento
+su più linee
+
+
+'''
+print(50 -3)
+
+print(3 * 5)
+
+print(10 / 2)
+# due alla quarta
+print(2**4)
+
+# modulo
+print(10%3)
+'''
+numero = int(input("Scrivi un numero: "))
+
+if numero % 2 == 0:
+    print("pari")
+else:
+    print("dispari")'''
+
+stringa1 = "ciao"
+stringa2 = "dal corso"
+
+numeroP = 13
+
+print(stringa1 , stringa2 , (numeroP + 34))
+
+print(f"ciao sono una fstring stampo stringa 1: {stringa1} stampo stringa 2: {stringa2} stamppo numerop: {numeroP / 2}")
+
+# input
+num_ut = int(input("Scrivi i tuoi anni: "))
+
+print(f"adesso hai {num_ut} anni, fra dieci anni avrai {num_ut + 10} anni")
+
+
+
+
