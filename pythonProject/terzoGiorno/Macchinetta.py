@@ -41,6 +41,7 @@ class MyApp(wx.App):
 
         self.button = wx.Button(panel, label="Invia")
         vbox.Add(self.button, flag=wx.ALL, border=10)
+        self.button.Bind(wx.EVT_BUTTON, self.Mostra)
 
         self.label2 = wx.StaticText(panel, label="Aggiungi credito")
         vbox.Add(self.label2, flag=wx.ALL, border=10)
@@ -50,7 +51,7 @@ class MyApp(wx.App):
         vbox.Add(self.text_ctrl1, flag=wx.EXPAND | wx.ALL, border=10)
         self.text_ctrl1.Hide()
 
-        self.button.Bind(wx.EVT_BUTTON, self.Mostra)
+
 
         self.buttonAdd = wx.Button(panel, label="Aggiungi")
         vbox.Add(self.buttonAdd, flag=wx.ALL, border=10)
@@ -126,7 +127,7 @@ class MyApp(wx.App):
                 # Mostra un messaggio di dialogo con il testo inserito
                 self.text_ctrl1.Show()
                 # Ricalcola il layout per evitare sovrapposizioni
-                self.text_ctrl1.GetParent().Layout()  # Ricalcola il layout del pannello
+                self.text_ctrl1.GetParent().Layout()
                 # Mostra un messaggio di dialogo con il testo inserito
 
 
@@ -174,7 +175,16 @@ class MyApp(wx.App):
                                   wx.OK | wx.ICON_INFORMATION)
 
     def Add(self, event):
-        print("ciao")
+        conto = self.text_ctrl.GetValue()
+        importo = int(self.text_ctrl1.GetValue())
+        wx.MessageBox(f"Hai aggiunto {importo} euro","Credito residuo",
+                      wx.OK | wx.ICON_INFORMATION)
+        for i in listaM:
+            if i.numConto == conto:
+                i.credito += importo
+                f = open("macchinetta.pkl", "wb")
+                pickle.dump(listaM, f)
+                f.close()
 if __name__ == "__main__":
     app = MyApp()
     app.MainLoop()
