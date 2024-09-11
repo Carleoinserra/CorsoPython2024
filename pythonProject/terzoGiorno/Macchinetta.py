@@ -2,17 +2,36 @@ import os
 import pickle
 import wx
 from contoMac import ContoMac
+from Prodotti import prodotti
+import matplotlib.pyplot as plt
+import numpy as np
 
 # Percorso del file dove i conti vengono salvati
-pickle_file = 'macchinetta.pkl'
+pickle_file = 'distributore.pkl'
 
 # Caricamento della lista dei conti se esiste, altrimenti usa una lista vuota
 if os.path.exists(pickle_file):
     with open(pickle_file, 'rb') as f:
 
         listaM = pickle.load(f)
+        listaP = pickle.load(f)
 else:
+    c1 = ContoMac("1234", 10)
+    c2 = ContoMac("1235", 10)
     listaM = []  # Se il file non esiste, inizializza con una lista vuota
+    listaM.append(c1)
+    listaM.append(c2)
+    p1 = prodotti("Caffè", 0)
+    p2 = prodotti("The", 0)
+    p3 = prodotti("Acqua", 0)
+    listaP = [p1, p2, p3]
+
+
+
+
+
+
+
 
 
 
@@ -80,16 +99,15 @@ class MyApp(wx.App):
 
 
 
-        '''
-        button = wx.Button(panel, label="Coffe")
+
+        button = wx.Button(panel, label="Visualizza grafici delle vendite")
         vbox.Add(button, flag=wx.ALL, border=10)
 
-        button.Bind(wx.EVT_BUTTON, self.ErogaCof)
+        button.Bind(wx.EVT_BUTTON, self.visualizza)
 
         
-        self.buttonThe.Hide()
-        self.buttonWat.Hide()
-        '''
+
+
         panel.SetSizer(vbox)
         frame.Show()
         return True
@@ -139,9 +157,13 @@ class MyApp(wx.App):
                 if i.credito >= 2:
                  i.credito -= 2
                  wx.MessageBox(f"Il saldo residuo è: {i.credito}", "Caffè in erogazione", wx.OK | wx.ICON_INFORMATION)
-                 f = open("macchinetta.pkl", "wb")
+                 listaP[0].articoli += 1
+                 f = open("distributore.pkl", "wb")
                  pickle.dump(listaM, f)
+                 pickle.dump(listaP, f)
                  f.close()
+                 for p in listaP:
+                     print(p)
                 else:
                     wx.MessageBox(f"Il saldo residuo è: {i.credito}", "Credito esaurito",
                                   wx.OK | wx.ICON_INFORMATION)
@@ -153,8 +175,10 @@ class MyApp(wx.App):
                 if i.credito >= 3:
                  i.credito -= 3
                  wx.MessageBox(f"Il saldo residuo è: {i.credito}", "The in erogazione", wx.OK | wx.ICON_INFORMATION)
-                 f = open("macchinetta.pkl", "wb")
+                 listaP[1].articoli += 1
+                 f = open("distributore.pkl", "wb")
                  pickle.dump(listaM, f)
+                 pickle.dump(listaP, f)
                  f.close()
                 else:
                     wx.MessageBox(f"Il saldo residuo è: {i.credito}", "Credito esaurito",
@@ -167,8 +191,10 @@ class MyApp(wx.App):
                 if i.credito >= 1:
                     i.credito -= 1
                     wx.MessageBox(f"Il saldo residuo è: {i.credito}", "Acqua in erogazione", wx.OK | wx.ICON_INFORMATION)
-                    f = open("macchinetta.pkl", "wb")
+                    listaP[2].articoli += 1
+                    f = open("distributore.pkl", "wb")
                     pickle.dump(listaM, f)
+                    pickle.dump(listaP, f)
                     f.close()
                 else:
                     wx.MessageBox(f"Il saldo residuo è: {i.credito}", "Credito esaurito",
@@ -182,9 +208,36 @@ class MyApp(wx.App):
         for i in listaM:
             if i.numConto == conto:
                 i.credito += importo
-                f = open("macchinetta.pkl", "wb")
+                f = open("distributore.pkl", "wb")
                 pickle.dump(listaM, f)
                 f.close()
+
+
+    def visualizza(self, event):
+
+        nomi = [prodotti.nome for prodotti in listaP]
+        pezzi = [int(prodotti.articoli) for prodotti in listaP]
+
+        # Crea una figura e due subplot (1 riga, 2 colonne)
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))  # 1 riga, 2 colonne
+
+        # 1. Grafico a barre
+        ax1.bar(nomi, pezzi)
+        ax1.set_xlabel('Nomi Articoli')
+        ax1.set_ylabel('Vendite')
+        ax1.set_title('Vendite prodotti')
+
+        # 2. Grafico a torta
+        ax2.pie(pezzi, labels=nomi, autopct='%1.1f%%', startangle=90)
+        ax2.set_title('Distribuzione delle vendite')
+
+        # Salva il grafico prima di mostrarlo
+        plt.savefig("vendite.png")
+
+        # Mostra entrambi i grafici
+        plt.show()
+
+
 if __name__ == "__main__":
     app = MyApp()
     app.MainLoop()
